@@ -15,17 +15,16 @@ export default function ChatBot() {
     setInput("");
 
     try {
-      // ✅ Correct model name
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-      // ✅ Generate content (latest SDK format)
+      // Newer SDK returns a response object with .text() directly
       const result = await model.generateContent(input);
       const response = await result.response;
-      const text = response.text(); // correct way to extract output
+      const text = response.text();
 
       setMessages([...newMessages, { role: "assistant", content: text }]);
     } catch (err) {
-      console.error("Gemini Error:", err);
+      console.error("Gemini API Error:", err);
       setMessages([
         ...newMessages,
         { role: "assistant", content: "❌ Error: " + err.message },
@@ -35,17 +34,10 @@ export default function ChatBot() {
 
   return (
     <div className="p-4 max-w-lg mx-auto text-gray-900">
-      <h1 className="text-2xl font-bold mb-4 text-blue-600">
-        🤖 SALAM SALAM AI Chatbot
-      </h1>
+      <h1 className="text-2xl font-bold mb-4 text-blue-600">🤖 SALAM SALAM AI Chatbot</h1>
       <div className="border p-3 h-80 overflow-y-auto mb-3 bg-gray-50 rounded">
         {messages.map((msg, i) => (
-          <p
-            key={i}
-            className={
-              msg.role === "user" ? "text-blue-700" : "text-green-700"
-            }
-          >
+          <p key={i} className={msg.role === "user" ? "text-blue-700" : "text-green-700"}>
             <b>{msg.role}:</b> {msg.content}
           </p>
         ))}
