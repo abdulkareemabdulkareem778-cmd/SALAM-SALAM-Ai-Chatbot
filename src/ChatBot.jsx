@@ -16,8 +16,6 @@ export default function ChatBot() {
 
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-      // Newer SDK returns a response object with .text() directly
       const result = await model.generateContent(input);
       const response = await result.response;
       const text = response.text();
