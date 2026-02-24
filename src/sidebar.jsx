@@ -4,7 +4,7 @@ export default function Sidebar() {
   return (
     <div className="w-64 bg-gray-800 p-4 border-r border-gray-700 flex flex-col">
       <h1 className="text-2xl font-bold mb-4 text-green-400 text-center">
-        🤖 SALAM AI
+        🤖 SALAM SALAM AI
       </h1>
 
       <button
