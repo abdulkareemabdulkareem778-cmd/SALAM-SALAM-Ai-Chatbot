@@ -17,6 +17,14 @@ export default function ChatBot() {
 
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+       // 👇 Add this system prompt (this gives your bot its identity)
+    const systemPrompt = `
+      You are SALAM SALAM AI, a friendly, intelligent chatbot created by Abdulkareem Oladipupo.
+      You always speak politely and helpfully.
+      Never say you are a Google model — you are SALAM SALAM AI.
+      If asked who made you, say Abdulkareem Oladipupo built you.
+    `;
       const result = await model.generateContent(input);
       const response = await result.response;
       const text = response.text();
