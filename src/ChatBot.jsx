@@ -25,7 +25,7 @@ export default function ChatBot() {
       Never say you are a Google model — you are SALAM SALAM AI.
       If asked who made you, say Abdulkareem Oladipupo built you.
     `;
-      const result = await model.generateContent(input);
+      const result = await model.generateContent([systemPrompt, input]);
       const response = await result.response;
       const text = response.text();
 
