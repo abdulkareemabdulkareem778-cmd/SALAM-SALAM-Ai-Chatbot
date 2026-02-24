@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -8,24 +7,35 @@ const genAI = new GoogleGenerativeAI(apiKey);
 export default function ChatBot() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const chatEndRef = useRef(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   async function handleSend() {
     if (!input.trim()) return;
     const newMessages = [...messages, { role: "user", content: input }];
     setMessages(newMessages);
     setInput("");
+    setLoading(true);
 
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-       // 👇 Add this system prompt (this gives your bot its identity)
-    const systemPrompt = `
-      You are SALAM SALAM AI, a friendly, intelligent chatbot created by Abdulkareem Oladipupo.
-      You always speak politely and helpfully.
-      Never say you are a Google model — you are SALAM SALAM AI.
-      If asked who made you, say Abdulkareem Oladipupo built you.
-    `;
-      const result = await model.generateContent([systemPrompt, input]);
+      const systemPrompt = `
+        You are SALAM SALAM AI, a friendly, intelligent chatbot created by Abdulkareem Oladipupo.
+        Always speak clearly, kindly, and naturally.
+        Never say you are a Google model — you are SALAM SALAM AI.
+      `;
+
+      const conversation = [
+        systemPrompt,
+        ...newMessages.map((m) => `${m.role}: ${m.content}`),
+      ].join("\n");
+
+      const result = await model.generateContent(conversation);
       const response = await result.response;
       const text = response.text();
 
@@ -36,32 +46,60 @@ export default function ChatBot() {
         ...newMessages,
         { role: "assistant", content: "❌ Error: " + err.message },
       ]);
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="p-4 max-w-lg mx-auto text-gray-900">
-      <h1 className="text-2xl font-bold mb-4 text-blue-600">🤖 SALAM SALAM AI Chatbot</h1>
-      <div className="border p-3 h-80 overflow-y-auto mb-3 bg-gray-50 rounded">
+    <div className="flex flex-col flex-1 p-4">
+      <div className="flex-1 overflow-y-auto mb-4 space-y-3 bg-gray-900 p-4 rounded-xl">
         {messages.map((msg, i) => (
-          <p key={i} className={msg.role === "user" ? "text-blue-700" : "text-green-700"}>
-            <b>{msg.role}:</b> {msg.content}
-          </p>
+          <div
+            key={i}
+            className={`flex ${
+              msg.role === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
+            <div
+              className={`max-w-[80%] px-4 py-2 rounded-2xl text-sm whitespace-pre-wrap ${
+                msg.role === "user"
+                  ? "bg-green-500 text-white rounded-br-none"
+                  : "bg-gray-700 text-gray-100 rounded-bl-none"
+              }`}
+            >
+              {msg.content}
+            </div>
+          </div>
         ))}
+
+        {loading && (
+          <div className="flex justify-start">
+            <div className="bg-gray-700 text-gray-300 px-4 py-2 rounded-2xl animate-pulse">
+              SALAM SALAM AI is thinking…
+            </div>
+          </div>
+        )}
+
+        <div ref={chatEndRef} />
       </div>
-      <input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type a message..."
-        className="border p-2 w-full rounded"
-        onKeyDown={(e) => e.key === "Enter" && handleSend()}
-      />
-      <button
-        onClick={ElementInternals}
-        className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-      >
-        Send
-      </button>
+
+      <div className="flex gap-2">
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          placeholder="Type a message…"
+          className="flex-1 p-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+        />
+        <button
+          onClick={handleSend}
+          disabled={loading}
+          className="bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-3 rounded-lg transition disabled:opacity-50"
+        >
+          {loading ? "…" : "Send"}
+        </button>
+      </div>
     </div>
   );
 }
