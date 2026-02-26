@@ -55,22 +55,40 @@ export default function ChatBot() {
     <div className="flex flex-col flex-1 p-4 bg-gray-900 text-white">
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto mb-4 space-y-3 bg-gray-900 p-4 rounded-xl">
-       {messages.map((msg, i) => (
+      {messages.map((msg, i) => (
   <div
     key={i}
-    className={`flex ${
+    className={`flex items-start gap-2 ${
       msg.role === "user" ? "justify-end" : "justify-start"
     }`}
   >
+    {/* Assistant avatar */}
+    {msg.role === "assistant" && (
+      <div className="flex-shrink-0 w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-white">
+        🤖
+      </div>
+    )}
+
+    {/* Chat bubble */}
     <div
-      className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm whitespace-pre-wrap shadow-md transition ${
+      className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm whitespace-pre-wrap shadow-md ${
         msg.role === "user"
-          ? "bg-green-500 text-white rounded-br-none"
+          ? "bg-green-500 text-white rounded-br-none self-end"
           : "bg-gray-700 text-gray-100 rounded-bl-none"
       }`}
     >
+      <span className="block text-xs font-semibold opacity-70 mb-1">
+        {msg.role === "user" ? "You" : "SALAM AI"}
+      </span>
       {msg.content}
     </div>
+
+    {/* User avatar */}
+    {msg.role === "user" && (
+      <div className="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white">
+        🧑
+      </div>
+    )}
   </div>
 ))}
 
