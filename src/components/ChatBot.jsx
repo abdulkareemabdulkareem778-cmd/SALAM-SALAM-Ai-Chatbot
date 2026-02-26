@@ -55,24 +55,24 @@ export default function ChatBot() {
     <div className="flex flex-col flex-1 p-4 bg-gray-900 text-white">
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto mb-4 space-y-3 bg-gray-900 p-4 rounded-xl">
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${
-              msg.role === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm whitespace-pre-wrap shadow-md transition ${
-                msg.role === "user"
-                  ? "bg-green-500 text-white rounded-br-none" // User on the right
-                  : "bg-gray-700 text-gray-100 rounded-bl-none" // Assistant on the left
-              }`}
-            >
-              {msg.content}
-            </div>
-          </div>
-        ))}
+       {messages.map((msg, i) => (
+  <div
+    key={i}
+    className={`flex ${
+      msg.role === "user" ? "justify-end" : "justify-start"
+    }`}
+  >
+    <div
+      className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm whitespace-pre-wrap shadow-md transition ${
+        msg.role === "user"
+          ? "bg-green-500 text-white rounded-br-none"
+          : "bg-gray-700 text-gray-100 rounded-bl-none"
+      }`}
+    >
+      {msg.content}
+    </div>
+  </div>
+))}
 
         {loading && (
           <div className="flex justify-start">
