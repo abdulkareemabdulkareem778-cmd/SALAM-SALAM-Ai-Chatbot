@@ -21,7 +21,6 @@ export default function Sidebar() {
       </div>
 
       <div className="text-gray-500 text-xs text-center mt-4">
-        Built by Abdulkareem Oladipupo 💻
       </div>
     </div>
   );
