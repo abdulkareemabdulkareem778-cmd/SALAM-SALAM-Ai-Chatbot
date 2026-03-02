@@ -93,7 +93,7 @@ export default function ChatBot() {
               }`}
             >
               <span className="block text-xs font-semibold mb-1 opacity-70">
-                {msg.role === "user" ? "You" : "SALAM AI"}
+                {msg.role === "user" ? "You ; " : "SALAM AI ; "}
               </span>
               <p>{msg.content}</p>
               <span className="block text-[11px] text-gray-400 mt-2 text-right">
