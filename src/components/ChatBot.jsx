@@ -16,7 +16,10 @@ export default function ChatBot() {
 
   async function handleSend() {
     if (!input.trim()) return;
-    const newMessages = [...messages, { role: "user", content: input }];
+    const newMessages = [
+  ...messages,
+  { role: "user", content: input, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) },
+];
     setMessages(newMessages);
     setInput("");
     setLoading(true);
