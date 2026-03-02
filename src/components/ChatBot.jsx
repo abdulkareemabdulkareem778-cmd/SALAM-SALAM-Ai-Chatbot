@@ -83,11 +83,13 @@ export default function ChatBot() {
             : "bg-gray-700 text-gray-100 rounded-bl-none"
         }`}
       >
-        <span className="block text-xs font-semibold mb-1 opacity-70">
-          {msg.role === "user ;" ? "You ;" : "SALAM AI ;"}
-        </span>
-        {msg.content}
-      </div>
+        
+        <span  className="flex flex-col">
+  {msg.role === "user" ? "You: " : "SALAM AI: "}{msg.content}</span>
+  <span className="text-[11px] text-gray-400 mt-1 self-end">
+    {msg.time}
+  </span>
+</div>
 
       {/* User (Right Side) */}
       {msg.role === "user" && (
