@@ -42,7 +42,10 @@ export default function ChatBot() {
       const response = await result.response;
       const text = response.text();
 
-      setMessages([...newMessages, { role: "assistant", content: text }]);
+      setMessages([
+  ...newMessages,
+  { role: "assistant", content: text, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) },
+]);
     } catch (err) {
       console.error("Gemini API Error:", err);
       setMessages([
