@@ -50,6 +50,7 @@ export default function ChatBot() {
 
       const result = await model.generateContent(conversation);
       const text = result.response.text();
+      await new Promise((res) => setTimeout(res, 800)); // 0.8s delay for realism
 
       setMessages([
         ...newMessages,
@@ -111,12 +112,17 @@ export default function ChatBot() {
         ))}
 
         {loading && (
-          <div className="flex justify-start">
-            <div className="bg-gray-800 text-gray-400 px-4 py-2 rounded-2xl animate-pulse">
-              SALAM AI is thinking…
-            </div>
-          </div>
-        )}
+  <div className="flex justify-start items-center gap-2">
+    <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white">
+      🤖
+    </div>
+    <div className="bg-gray-800 text-gray-300 px-4 py-3 rounded-2xl flex items-center space-x-1">
+      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+    </div>
+  </div>
+)}
 
         <div ref={chatEndRef} />
       </div>
