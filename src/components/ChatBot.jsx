@@ -21,12 +21,18 @@ export default function ChatBot() {
     localStorage.setItem("salam_ai_chat", JSON.stringify(messages));
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-function streamText(text, callback, delay = 25) {
+function streamText(text, callback, delay = 20) {
   let i = 0;
+  let current = "";
+
   const interval = setInterval(() => {
-    callback((prev) => prev + text[i]);
+    current += text[i];
+    callback(current);
     i++;
-    if (i >= text.length) clearInterval(interval);
+
+    if (i >= text.length) {
+      clearInterval(interval);
+    }
   }, delay);
 }
   async function handleSend() {
@@ -56,24 +62,31 @@ function streamText(text, callback, delay = 25) {
       ].join("\n");
 
       const result = await model.generateContent(conversation);
-      const response = await result.response;
-      const text = response.text();
+const response = await result.response;
 
-      await new Promise((res) => setTimeout(res, 800)); // optional delay
-const timeNow = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+// 🔥 FIX: get text properly
+const text = response.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
 
-// start empty assistant message for streaming
+// small delay (optional)
+await new Promise((res) => setTimeout(res, 500));
+
+const timeNow = new Date().toLocaleTimeString([], {
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
+// add empty assistant message first
 setMessages((prev) => [
   ...newMessages,
   { role: "assistant", content: "", time: timeNow },
 ]);
 
-
+// stream typing
 streamText(text, (updatedContent) => {
   setMessages((prev) => {
     const updated = [...prev];
     updated[updated.length - 1].content = updatedContent;
-    return [...updated];
+    return updated;
   });
 });
     } catch (err) {
