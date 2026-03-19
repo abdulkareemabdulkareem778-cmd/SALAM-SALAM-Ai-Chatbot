@@ -21,7 +21,14 @@ export default function ChatBot() {
     localStorage.setItem("salam_ai_chat", JSON.stringify(messages));
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
+function streamText(text, callback, delay = 25) {
+  let i = 0;
+  const interval = setInterval(() => {
+    callback((prev) => prev + text[i]);
+    i++;
+    if (i >= text.length) clearInterval(interval);
+  }, delay);
+}
   async function handleSend() {
     if (!input.trim()) return;
     const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -49,13 +56,26 @@ export default function ChatBot() {
       ].join("\n");
 
       const result = await model.generateContent(conversation);
-      const text = result.response.text();
-      await new Promise((res) => setTimeout(res, 800)); // 0.8s delay for realism
+      const response = await result.response;
+      const text = response.text();
 
-      setMessages([
-        ...newMessages,
-        { role: "assistant", content: text, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) },
-      ]);
+      await new Promise((res) => setTimeout(res, 800)); // optional delay
+const timeNow = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+// start empty assistant message for streaming
+setMessages((prev) => [
+  ...newMessages,
+  { role: "assistant", content: "", time: timeNow },
+]);
+
+
+streamText(text, (updatedContent) => {
+  setMessages((prev) => {
+    const updated = [...prev];
+    updated[updated.length - 1].content = updatedContent;
+    return [...updated];
+  });
+});
     } catch (err) {
       console.error("Gemini API Error:", err);
       setMessages([
