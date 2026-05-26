@@ -159,10 +159,10 @@ streamText(text, (updatedContent) => {
     </div>
   </div>
 )}
-(
+
         <div ref={chatEndRef} />
 
-){/* Input Bar (ChatGPT Style) */} 
+{/* Input Bar (ChatGPT Style) */} 
      <div className="border-t border-gray-800 bg-[#121212] p-4 sticky bottom-0">
        <div className="max-w-3xl mx-auto flex items-center gap-3 bg-[#1a1a1a] border border-gray-700 rounded-2xl px-4 py-2 shadow-md"> 
          <textarea
