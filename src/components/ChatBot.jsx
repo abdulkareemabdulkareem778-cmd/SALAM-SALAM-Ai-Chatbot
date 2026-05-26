@@ -103,46 +103,49 @@ streamText(text, (updatedContent) => {
   return (
     <div className="flex flex-col h-screen bg-[#0f0f0f] text-white">
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-5">
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex items-start gap-3 ${
-              msg.role === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            {/* Assistant (Left Side) */}
-            {msg.role === "assistant" && (
-              <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white">
-                🤖
-              </div>
-            )}
+    <div className="flex-1 overflow-y-auto space-y-4 p-4">
+  {messages.map((msg, i) => (
+    <div
+      key={i}
+      className={`flex items-end gap-2 ${
+        msg.role === "user" ? "justify-end" : "justify-start"
+      }`}
+    >
+      {/* Assistant Avatar */}
+      {msg.role === "assistant" && (
+        <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white">
+          🤖
+        </div>
+      )}
 
-            {/* Chat Bubble */}
-            <div
-              className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm shadow-md ${
-                msg.role === "user"
-                  ? "bg-green-600 text-white rounded-br-none self-end"
-                  : "bg-gray-800 text-gray-100 rounded-bl-none"
-              }`}
-            >
-              <span className="block text-xs font-semibold mb-1 opacity-70">
-                {msg.role === "user" ? "You ; " : "SALAM AI ; "}
-              </span>
-              <p>{msg.content}</p>
-              <span className="block text-[11px] text-gray-400 mt-2 text-right">
-                {msg.time}
-              </span>
-            </div>
+      {/* Message Bubble */}
+      <div
+        className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm shadow-md ${
+          msg.role === "user"
+            ? "bg-green-600 text-white rounded-br-none"
+            : "bg-gray-800 text-gray-100 rounded-bl-none"
+        }`}
+      >
+        <span className="block text-xs opacity-70 mb-1">
+          {msg.role === "user" ? "You" : "SALAM AI"}
+        </span>
 
-            {/* User (Right Side) */}
-            {msg.role === "user" && (
-              <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white">
-                🧑
-              </div>
-            )}
-          </div>
-        ))}
+        <p>{msg.content}</p>
+
+        <span className="block text-[11px] text-gray-400 mt-2 text-right">
+          {msg.time}
+        </span>
+      </div>
+
+      {/* User Avatar */}
+      {msg.role === "user" && (
+        <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white">
+          🧑
+        </div>
+      )}
+    </div>
+  ))}
+</div>
 
         {loading && (
   <div className="flex justify-start items-center gap-2">
@@ -156,27 +159,34 @@ streamText(text, (updatedContent) => {
     </div>
   </div>
 )}
-
+(
         <div ref={chatEndRef} />
-      </div>
 
-      {/* Input Bar (Fixed Bottom) */}
-      <div className="border-t border-gray-800 bg-[#121212] p-4 flex gap-3 sticky bottom-0">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="Message SALAM SALAM AI..."
-          className="flex-1 p-3 bg-[#1a1a1a] text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
-        <button
-          onClick={handleSend}
-          disabled={loading}
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-3 rounded-lg transition disabled:opacity-50"
-        >
-          {loading ? "…" : "Send"}
-        </button>
-      </div>
+){/* Input Bar (ChatGPT Style) */} 
+     <div className="border-t border-gray-800 bg-[#121212] p-4 sticky bottom-0">
+       <div className="max-w-3xl mx-auto flex items-center gap-3 bg-[#1a1a1a] border border-gray-700 rounded-2xl px-4 py-2 shadow-md"> 
+         <textarea
+           rows={1}
+           value={input}
+           onChange={(e) => setInput(e.target.value)}
+           onKeyDown={(e) => {
+             if (e.key === "Enter" && !e.shiftKey) {
+               e.preventDefault();
+               handleSend();
+             }
+           }}
+           placeholder="Message SALAM AI..."
+           className="flex-1 bg-transparent text-white outline-none text-sm resize-none placeholder-gray-400"
+         />
+         <button
+           onClick={handleSend}
+           disabled={loading}
+           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition disabled:opacity-50"
+         >
+           ➤
+         </button>
+       </div>
+     </div>
     </div>
   );
 }
